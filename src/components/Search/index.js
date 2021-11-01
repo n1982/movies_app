@@ -1,3 +1,3 @@
-import Search from './Seach';
+import Search from './Search';
 
 export default Search;

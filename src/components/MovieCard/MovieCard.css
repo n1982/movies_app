@@ -1,0 +1,62 @@
+.ant-card {
+    max-width: 454px;
+    max-height: 281px;
+    display: grid;
+    grid-template-columns: 0.8fr 1fr;
+    grid-column-gap: 20px;
+    background-color: #FFFFFF;
+}
+
+.ant-card-body {
+    position: relative;
+    padding: 0;
+}
+
+.ant-card-cover img {
+    object-fit: cover;
+}
+
+.ant-tag {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-right: 5px;
+}
+
+span.ant-typography {
+    font-size: 1vw;
+}
+
+@media (min-width: 1024px ) {
+    span.ant-typography {
+        font-size: 10px;
+    }
+}
+
+.ant-rate {
+    font-size: 1vw;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+@media (min-width: 1024px ) {
+    .ant-rate {
+        font-size: 14px;
+    }
+}
+.card-title{
+    display: grid;
+    grid-template-columns: 1fr 40px;
+}
+.stars-count{
+    display:table-cell;
+    border:2px solid yellow;
+    width: 32px;
+    height: 32px;
+    text-align: center;
+    border-radius: 50%;
+    vertical-align: middle;
+
+
+
+
+
+}
