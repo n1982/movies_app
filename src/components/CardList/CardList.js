@@ -1,19 +1,17 @@
 import React from 'react';
 import './CardList.css';
+import PropTypes from 'prop-types';
 import MovieCard from '../MovieCard';
 
-// eslint-disable-next-line arrow-body-style
-const CardList = () => {
-  return (
+const CardList = ({ movieDataFromBase }) => (
     <div className="card-list">
-      <MovieCard />
-          <MovieCard />
-
-
-
-
+      <MovieCard movieDataFromBase={movieDataFromBase}  />
     </div>
   );
+CardList.defaultProps = {
+  movieDataFromBase: [],
 };
-
+CardList.propTypes = {
+  movieDataFromBase: PropTypes.instanceOf(Array)
+};
 export default CardList;

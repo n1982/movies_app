@@ -5,7 +5,7 @@ background-color:#F7F7F7;
 .container{
   min-width: 320px;
   max-width: 1010px;
-  height: 100%;
+  height: auto;
   margin: auto;
   position: relative;
   padding: 0 36px;
