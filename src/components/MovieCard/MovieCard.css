@@ -5,18 +5,28 @@
     grid-template-columns: 0.8fr 1fr;
     grid-column-gap: 20px;
     background-color: #FFFFFF;
+
 }
 
 .ant-card-body {
     position: relative;
-    padding: 0;
+    padding: 0 0 12px 0;
+    margin-top: 12px;
+    margin-right: 9px;
+    max-height: 281px;
+display: flex;
+    flex-direction: column;
+
 }
 
 .ant-card-cover img {
+    max-height: 281px;
     object-fit: cover;
-}
 
+}
 .ant-tag {
+    max-width: 46px;
+    max-height: 20px;
     margin-top: 10px;
     margin-bottom: 10px;
     margin-right: 5px;
@@ -28,14 +38,16 @@ span.ant-typography {
 
 @media (min-width: 1024px ) {
     span.ant-typography {
-        font-size: 10px;
+        font-size: 12px;
     }
 }
 
 .ant-rate {
     font-size: 1vw;
-    margin-top: 5px;
+    margin-top: auto;
     margin-bottom: 5px;
+
+
 }
 @media (min-width: 1024px ) {
     .ant-rate {
@@ -45,15 +57,23 @@ span.ant-typography {
 .card-title{
     display: grid;
     grid-template-columns: 1fr 40px;
+    font-weight: bold;
+}
+.card-film-title{
+margin-bottom: 0;
 }
 .stars-count{
-    display:table-cell;
-    border:2px solid yellow;
-    width: 32px;
-    height: 32px;
-    text-align: center;
+    display: flex;
+    border:2px solid #EEDC40;
+    width: 35px;
+    height: 35px;
     border-radius: 50%;
-    vertical-align: middle;
+    font-size: 11px;
+    justify-content: center;
+    align-items: center;
+
+
+
 
 
 

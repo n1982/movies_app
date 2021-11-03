@@ -1,38 +1,62 @@
 import React, { Component } from 'react';
-import './App.css';
-
 import Header from '../Header';
-
 import 'antd/dist/antd.css';
 import CardList from '../CardList';
-
+import MovieDbService from '../../services/MovieDbService';
+import './App.css';
 
 export default class App extends Component {
-  state = {};
-
-  getDataFromServer = async (url) => {
-    const res = await fetch(url);
-    if (!res.ok){
-      throw new Error(`Could not load data from ${url}, received ${res.status}`)
-    }
-    const body = await res.json()
-    return body
+  state = {
+    dataStream: [],
   };
 
+  MovieDbService = new MovieDbService();
 
+  componentDidMount() {
+    this.getMoviesData();
+  }
+
+  getMoviesData() {
+    this.MovieDbService.getDataFromServer().then((movies) => {
+      movies.forEach((elm) => {
+        this.addItem(elm);
+      });
+    });
+  }
+
+  createTodoItem = (item) => {
+    let posterURL = `https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Out_Of_Poster.jpg/180px-Out_Of_Poster.jpg`;
+    if (item.poster_path) {
+      posterURL = `https://image.tmdb.org/t/p/w185${item.poster_path}`;
+    }
+
+    return {
+      id: item.id,
+      filmTitle: item.title,
+      posterURL,
+      releaseDate: item.release_date,
+      overview: item.overview,
+      popularity: item.popularity,
+    };
+  };
+
+  addItem = (item) => {
+    const newItem = this.createTodoItem(item);
+    this.setState(({ dataStream }) => {
+      const newDataStream = [...dataStream, newItem];
+      return {
+        dataStream: newDataStream,
+      };
+    });
+  };
 
   render() {
-    this.getDataFromServer('https://api.themoviedb.org/3/search/movie?api_key=9420f971c77382011b10789475bfd7fa&page=10&include_adult=false&query=return')
-      .then((body)=>{
-        console.log(body);
-      })
-      .catch((err)=>{
-        console.log(err);
-      })
+    const { dataStream } = this.state;
+
     return (
       <div className="App">
         <Header />
-        <CardList />
+        <CardList movieDataFromBase={dataStream} />
       </div>
     );
   }
