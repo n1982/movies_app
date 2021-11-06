@@ -32,12 +32,12 @@ const MovieCard = ({ movieDataFromBase }) => {
           <div className="stars-count">{popularityRounding}</div>
         </div>
         <Text  type="secondary">{releaseDateFormatted}</Text>
-      <div>
+      <div className='card-tags'>
         <Tag>{tag1}</Tag>
         <Tag>{tag2}</Tag>
         </div>
         <Text>{overviewTruncated}</Text>
-        <Rate allowHalf defaultValue={2.5} count={10} />
+        <Rate count={10}  />
       </Card>
     );
   });

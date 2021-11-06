@@ -8,13 +8,13 @@
 
 }
 
-.ant-card-body {
+div .ant-card-body {
     position: relative;
     padding: 0 0 12px 0;
     margin-top: 12px;
     margin-right: 9px;
     max-height: 281px;
-display: flex;
+    display: flex;
     flex-direction: column;
 
 }
@@ -24,15 +24,17 @@ display: flex;
     object-fit: cover;
 
 }
-.ant-tag {
+.card-tags{
+    margin-top: 5px;
+}
+span.ant-tag {
     max-width: 46px;
     max-height: 20px;
-    margin-top: 10px;
-    margin-bottom: 10px;
     margin-right: 5px;
 }
 
 span.ant-typography {
+    margin-top: 5px;
     font-size: 1vw;
 }
 
@@ -42,41 +44,39 @@ span.ant-typography {
     }
 }
 
-.ant-rate {
+ul.ant-rate {
     font-size: 1vw;
     margin-top: auto;
     margin-bottom: 5px;
 
 
 }
+
 @media (min-width: 1024px ) {
-    .ant-rate {
+    ul.ant-rate {
         font-size: 14px;
     }
 }
-.card-title{
+
+.card-title {
     display: grid;
     grid-template-columns: 1fr 40px;
     font-weight: bold;
 }
-.card-film-title{
-margin-bottom: 0;
+
+.card-film-title {
+    margin-bottom: 0;
 }
-.stars-count{
+
+.stars-count {
     display: flex;
-    border:2px solid #EEDC40;
+    border: 2px solid #EEDC40;
     width: 35px;
     height: 35px;
     border-radius: 50%;
     font-size: 11px;
     justify-content: center;
     align-items: center;
-
-
-
-
-
-
 
 
 }
