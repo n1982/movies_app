@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Spin} from 'antd'
+import { Spin } from 'antd';
 
 import Header from '../Header';
 // eslint-disable-next-line no-unused-vars
@@ -12,6 +12,7 @@ import 'antd/dist/antd.css';
 export default class App extends Component {
   state = {
     dataStream: [],
+    isLoading: true,
   };
 
   MovieDbService = new MovieDbService();
@@ -51,20 +52,23 @@ export default class App extends Component {
       const newDataStream = [...dataStream, newItem];
       return {
         dataStream: newDataStream,
+        isLoading: false,
       };
     });
   };
-// TODO добавить спинер
+
+  // TODO добавить спинер
 
   render() {
     // eslint-disable-next-line no-unused-vars
-    const { dataStream } = this.state;
+    const { dataStream, isLoading } = this.state;
+    // eslint-disable-next-line no-unused-vars
+    const cardList = isLoading ? <Spin size="large" /> : <CardList movieDataFromBase={dataStream} />;
 
     return (
       <div className="app">
         <Header />
-         <Spin size="large" />
-         {/* <CardList movieDataFromBase={dataStream} /> */}
+        { cardList }
       </div>
     );
   }
