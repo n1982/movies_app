@@ -1,0 +1,12 @@
+.app {
+    height: 100%;
+}
+
+div .ant-spin {
+    position: relative;
+    display: block;
+    margin-top: 25%;
+    margin-left: auto;
+    margin-right: auto;
+
+}

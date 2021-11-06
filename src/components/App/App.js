@@ -1,9 +1,13 @@
 import React, { Component } from 'react';
+import {Spin} from 'antd'
+
 import Header from '../Header';
-import 'antd/dist/antd.css';
+// eslint-disable-next-line no-unused-vars
 import CardList from '../CardList';
 import MovieDbService from '../../services/MovieDbService';
+
 import './App.css';
+import 'antd/dist/antd.css';
 
 export default class App extends Component {
   state = {
@@ -25,6 +29,7 @@ export default class App extends Component {
   }
 
   createTodoItem = (item) => {
+    // TODO добавить загрузку файла с жесткого
     let posterURL = `https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Out_Of_Poster.jpg/180px-Out_Of_Poster.jpg`;
     if (item.poster_path) {
       posterURL = `https://image.tmdb.org/t/p/w185${item.poster_path}`;
@@ -49,14 +54,17 @@ export default class App extends Component {
       };
     });
   };
+// TODO добавить спинер
 
   render() {
+    // eslint-disable-next-line no-unused-vars
     const { dataStream } = this.state;
 
     return (
-      <div className="App">
+      <div className="app">
         <Header />
-        <CardList movieDataFromBase={dataStream} />
+         <Spin size="large" />
+         {/* <CardList movieDataFromBase={dataStream} /> */}
       </div>
     );
   }
