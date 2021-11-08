@@ -1,13 +1,11 @@
 import React, { Component } from 'react';
 import { Tabs } from 'antd';
 
-import './Header.css'
+import './Header.css';
 import Search from '../Search';
 
-export default class Header extends Component  {
-  state ={
-
-  }
+export default class Header extends Component {
+  state = {};
 
   // eslint-disable-next-line no-console
   onSearch = (value) => console.log(value);
@@ -15,9 +13,8 @@ export default class Header extends Component  {
   // eslint-disable-next-line no-console
   callback = (key) => console.log(key);
 
-    render() {
+  render() {
     const { TabPane } = Tabs;
-
 
     return (
       <div className="header">
@@ -30,6 +27,4 @@ export default class Header extends Component  {
       </div>
     );
   }
-};
-
-
+}

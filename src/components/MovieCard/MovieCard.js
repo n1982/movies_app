@@ -10,6 +10,7 @@ const MovieCard = ({ movieDataFromBase }) => {
   const listElements = movieDataFromBase.map((item) => {
     const tag1 = 'Action';
     const tag2 = 'Action';
+
     const { posterURL, id, filmTitle, releaseDate, overview, popularity } = item;
 
     const releaseDateFormatted = format(parseISO(releaseDate), 'MMMM dd, yyyy');
@@ -31,23 +32,26 @@ const MovieCard = ({ movieDataFromBase }) => {
           <p className="card-film-title">{filmTitle}</p>
           <div className="stars-count">{popularityRounding}</div>
         </div>
-        <Text  type="secondary">{releaseDateFormatted}</Text>
-      <div className='card-tags'>
-        <Tag>{tag1}</Tag>
-        <Tag>{tag2}</Tag>
+        <Text type="secondary">{releaseDateFormatted}</Text>
+        <div className="card-tags">
+          <Tag>{tag1}</Tag>
+          <Tag>{tag2}</Tag>
         </div>
         <Text>{overviewTruncated}</Text>
-        <Rate count={10}  />
+        <Rate count={10} />
       </Card>
     );
   });
 
   return listElements;
 };
+
 MovieCard.defaultProps = {
   movieDataFromBase: [],
 };
+
 MovieCard.propTypes = {
   movieDataFromBase: PropTypes.instanceOf(Array),
 };
+
 export default MovieCard;

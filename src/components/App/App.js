@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Spin } from 'antd';
+import { Alert, Spin } from 'antd';
 
 import Header from '../Header';
 import CardList from '../CardList';
@@ -8,12 +8,13 @@ import MovieDbService from '../../services/MovieDbService';
 import './App.css';
 import 'antd/dist/antd.css';
 
-import outOfPosterImg from './Out_Of_Poster.jpg'
+import outOfPosterImg from './Out_Of_Poster.jpg';
 
 export default class App extends Component {
   state = {
     dataStream: [],
     isLoading: true,
+    isError: false,
   };
 
   MovieDbService = new MovieDbService();
@@ -22,16 +23,24 @@ export default class App extends Component {
     this.getMoviesData();
   }
 
-  getMoviesData() {
-    this.MovieDbService.getDataFromServer().then((movies) => {
-      movies.forEach((elm) => {
-        this.addItem(elm);
-      });
+  onError = () => {
+    this.setState({
+      isLoading: false,
+      isError: true,
     });
+  };
+
+  getMoviesData() {
+    this.MovieDbService.getDataFromServer()
+      .then((movies) => {
+        movies.forEach((elm) => {
+          this.addItem(elm);
+        });
+      })
+      .catch(this.onError);
   }
 
   createTodoItem = (item) => {
-
     let posterURL = `${outOfPosterImg}`;
     if (item.poster_path) {
       posterURL = `https://image.tmdb.org/t/p/w185${item.poster_path}`;
@@ -58,17 +67,19 @@ export default class App extends Component {
     });
   };
 
-
   render() {
-    // eslint-disable-next-line no-unused-vars
-    const { dataStream, isLoading } = this.state;
-    // eslint-disable-next-line no-unused-vars
-    const cardList = isLoading ? <Spin size="large" /> : <CardList movieDataFromBase={dataStream} />;
+    const { dataStream, isLoading, isError } = this.state;
+    const error = isError ? (
+      <Alert message="Error" description="Что-то пошло не так. Но мы скоро все исправим :-)" type="error" showIcon />
+    ) : null;
+
+    const cardList = isLoading && !isError ? <Spin size="large" /> : <CardList movieDataFromBase={dataStream} />;
 
     return (
       <div className="app">
         <Header />
-        { cardList }
+        {cardList}
+        {error}
       </div>
     );
   }
