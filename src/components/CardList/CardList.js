@@ -8,10 +8,13 @@ const CardList = ({ movieDataFromBase }) => (
     <MovieCard movieDataFromBase={movieDataFromBase} />
   </div>
 );
+
 CardList.defaultProps = {
   movieDataFromBase: [],
 };
+
 CardList.propTypes = {
   movieDataFromBase: PropTypes.instanceOf(Array),
 };
+
 export default CardList;
