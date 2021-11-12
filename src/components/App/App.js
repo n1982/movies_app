@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
-import { Alert, Spin } from 'antd';
+import { Alert, Empty, Pagination, Space, Spin } from 'antd';
+import { format, parseISO } from 'date-fns';
 
-import Header from '../Header';
-import CardList from '../CardList';
 import MovieDbService from '../../services/MovieDbService';
+import Header from '../Header';
+import Search from '../Search';
+import CardList from '../CardList';
 
 import './App.css';
 import 'antd/dist/antd.css';
@@ -15,45 +17,46 @@ export default class App extends Component {
     dataStream: [],
     isLoading: true,
     isError: false,
-  };
+    notFound: false,
 
-  MovieDbService = new MovieDbService();
+  };
 
   componentDidMount() {
     this.getMoviesData();
   }
 
-  onError = () => {
-    this.setState({
-      isLoading: false,
-      isError: true,
-    });
-  };
 
-  getMoviesData() {
-    this.MovieDbService.getDataFromServer()
+
+  getMoviesData = (query) => {
+
+    const callMovieDbService = new MovieDbService();
+    this.setState({
+      dataStream: [],
+      isLoading: true,
+      notFound: false,
+      isError: false,
+    });
+    callMovieDbService
+      .getMovies(query)
       .then((movies) => {
-        movies.forEach((elm) => {
+        console.log(movies);
+        if (movies.results.length === 0) {
+          this.setState({
+            isLoading: false,
+            notFound: true,
+          });
+        }
+        movies.results.forEach((elm) => {
           this.addItem(elm);
         });
       })
-      .catch(this.onError);
-  }
-
-  createTodoItem = (item) => {
-    let posterURL = `${outOfPosterImg}`;
-    if (item.poster_path) {
-      posterURL = `https://image.tmdb.org/t/p/w185${item.poster_path}`;
-    }
-
-    return {
-      id: item.id,
-      filmTitle: item.title,
-      posterURL,
-      releaseDate: item.release_date,
-      overview: item.overview,
-      popularity: item.popularity,
-    };
+      .catch(() => {
+        this.setState({
+          isLoading: false,
+          notFound: false,
+          isError: true,
+        });
+      });
   };
 
   addItem = (item) => {
@@ -67,20 +70,51 @@ export default class App extends Component {
     });
   };
 
+  createTodoItem = (item) => {
+    const releaseDate = item.release_date ? format(parseISO(item.release_date), 'MMMM dd, yyyy') : 'no release date';
+    const filmTitle = item.title || 'Movie title not specified';
+    const overview = item.overview || 'Movie overview not specified';
+    const popularity = item.popularity || -0;
+    let posterURL = `${outOfPosterImg}`;
+    if (item.poster_path) {
+      posterURL = `https://image.tmdb.org/t/p/w185${item.poster_path}`;
+    }
+    return {
+      id: item.id,
+      filmTitle,
+      posterURL,
+      releaseDate,
+      overview,
+      popularity,
+    };
+  };
+
+  onError = () => {
+    this.setState({
+      isLoading: false,
+      isError: true,
+    });
+  };
+
   render() {
-    const { dataStream, isLoading, isError } = this.state;
+    const { dataStream, isLoading, isError, notFound } = this.state;
     const error = isError ? (
       <Alert message="Error" description="Что-то пошло не так. Но мы скоро все исправим :-)" type="error" showIcon />
     ) : null;
-
+    const notFoundMovies = notFound ? <Empty /> : null;
     const cardList = isLoading && !isError ? <Spin size="large" /> : <CardList movieDataFromBase={dataStream} />;
 
     return (
-      <div className="app">
-        <Header />
+     <>
+      <Header />
+      <Search getMoviesData={this.getMoviesData} />
+      <Space direction="vertical" className="app" align="center">
         {cardList}
+        {notFoundMovies}
         {error}
-      </div>
+        <Pagination defaultCurrent={1} total={50} />
+      </Space>
+     </>
     );
   }
 }

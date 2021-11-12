@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { Tabs } from 'antd';
 
 import './Header.css';
-import Search from '../Search';
 
 export default class Header extends Component {
   state = {};
@@ -23,7 +22,6 @@ export default class Header extends Component {
 
           <TabPane tab="Rated" key="2" />
         </Tabs>
-        <Search />
       </div>
     );
   }
