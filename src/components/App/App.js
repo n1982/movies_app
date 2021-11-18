@@ -18,17 +18,44 @@ export default class App extends Component {
     isLoading: true,
     isError: false,
     notFound: false,
-
+    // eslint-disable-next-line react/no-unused-state
+    searchQuery: 'Good day',
+    // eslint-disable-next-line react/no-unused-state
+    numberPage: 1,
+    // eslint-disable-next-line react/no-unused-state
+    totalPages: 1,
   };
 
   componentDidMount() {
     this.getMoviesData();
   }
 
+  onInputChange = (searchQuery) => {
+    this.setState(
+      {
+        searchQuery,
+        // eslint-disable-next-line react/no-unused-state
+        numberPage: 1,
+      },
+      () => {
+        this.getMoviesData();
+      }
+    );
+  };
 
+  onPageChange = (page) => {
+    this.setState(
+      {
+        numberPage: page,
+      },
+      () => {
+        this.getMoviesData();
+      }
+    );
+  };
 
-  getMoviesData = (query) => {
-
+  getMoviesData = () => {
+    const { searchQuery, numberPage } = this.state;
     const callMovieDbService = new MovieDbService();
     this.setState({
       dataStream: [],
@@ -37,9 +64,13 @@ export default class App extends Component {
       isError: false,
     });
     callMovieDbService
-      .getMovies(query)
+      .getMovies(searchQuery, numberPage)
       .then((movies) => {
-        console.log(movies);
+        this.setState({
+          // eslint-disable-next-line react/no-unused-state
+          totalPages: movies.total_pages,
+          numberPage,
+        });
         if (movies.results.length === 0) {
           this.setState({
             isLoading: false,
@@ -97,7 +128,8 @@ export default class App extends Component {
   };
 
   render() {
-    const { dataStream, isLoading, isError, notFound } = this.state;
+    // eslint-disable-next-line no-unused-vars
+    const { dataStream, isLoading, isError, notFound, totalPages, numberPage } = this.state;
     const error = isError ? (
       <Alert message="Error" description="Что-то пошло не так. Но мы скоро все исправим :-)" type="error" showIcon />
     ) : null;
@@ -105,16 +137,16 @@ export default class App extends Component {
     const cardList = isLoading && !isError ? <Spin size="large" /> : <CardList movieDataFromBase={dataStream} />;
 
     return (
-     <>
-      <Header />
-      <Search getMoviesData={this.getMoviesData} />
-      <Space direction="vertical" className="app" align="center">
-        {cardList}
-        {notFoundMovies}
-        {error}
-        <Pagination defaultCurrent={1} total={50} />
-      </Space>
-     </>
+      <>
+        <Header />
+        <Search onInputChange={this.onInputChange} />
+        <Space direction="vertical" className="app" align="center">
+          {cardList}
+          {notFoundMovies}
+          {error}
+          <Pagination defaultCurrent={1} current={numberPage} total={totalPages * 10} onChange={this.onPageChange} />
+        </Space>
+      </>
     );
   }
 }

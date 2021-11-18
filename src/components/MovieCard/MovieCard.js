@@ -1,7 +1,7 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import './MovieCard.css';
 import { Card, Rate, Tag, Typography } from 'antd';
-import PropTypes from 'prop-types';
 
 const { Text } = Typography;
 
@@ -11,9 +11,6 @@ const MovieCard = ({ movieDataFromBase }) => {
     const tag2 = 'Action';
 
     const { posterURL, id, filmTitle, releaseDate, overview, popularity } = item;
-
-
-
 
     function truncate(numberSymbols, useWordBoundary) {
       if (this.length <= numberSymbols) {

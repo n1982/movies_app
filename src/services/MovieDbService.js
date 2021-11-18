@@ -1,6 +1,8 @@
 export default class MovieDbService {
   apiKey = '9420f971c77382011b10789475bfd7fa';
 
+  guestKey = 'e367f89276658b5e9b5eac064beb6ede';
+
   baseUrl = 'https://api.themoviedb.org/3/';
 
   // url = `https://api.themoviedb.org/3/search/movie?api_key=${this.apiKey}&page=10&include_adult=false&query=return`;
@@ -22,8 +24,13 @@ export default class MovieDbService {
   };
 
   getMovies = async (searchQuery = 'return', pageNumber = 1) => {
-
     const url = `${this.baseUrl}search/movie?api_key=${this.apiKey}&page=10&include_adult=false&query=${searchQuery}&page=${pageNumber}`;
+    const body = await this.getDataFromServer(url);
+    return body;
+  };
+
+  guestSession = async () => {
+    const url = `${this.baseUrl}search/movie?api_key=${this.guestKey}`;
     const body = await this.getDataFromServer(url);
     return body;
   };

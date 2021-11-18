@@ -8,24 +8,22 @@ import debounce from 'lodash.debounce';
 
 export default class Search extends Component {
   static defaultProps = {
-    getMoviesData: () => {},
+    onInputChange: () => {},
   };
 
   static propTypes = {
-    getMoviesData: PropTypes.func,
+    onInputChange: PropTypes.func,
   };
 
   onSearch = (event) => {
-    const { getMoviesData } = this.props;
+    const { onInputChange } = this.props;
     const trimUserRequest = event.target.value.replace(/ +/g, ' ').trim();
-
     if (trimUserRequest !== '') {
-      getMoviesData(trimUserRequest);
+      onInputChange(trimUserRequest);
     }
   };
 
   render() {
-    return <Input placeholder="Type to search..." size = "large" onChange={debounce(this.onSearch, 500)}/>
-    // return <Input className="search-input" placeholder="Type to search..." onChange={debounce(this.onSearch, 500)} />;
+    return <Input placeholder="Type to search..." size="large" onChange={debounce(this.onSearch, 1000)} />;
   }
 }
