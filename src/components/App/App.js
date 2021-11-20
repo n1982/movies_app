@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Alert, Empty, Pagination, Space, Spin } from 'antd';
 import { format, parseISO } from 'date-fns';
+import { Context } from '../GenresContext/GenresContext';
 
 import MovieDbService from '../../services/MovieDbService';
 import Header from '../Header';
@@ -16,9 +17,7 @@ export default class App extends Component {
   state = {
     movies: [],
     ratedFilm: [],
-    // eslint-disable-next-line react/no-unused-state
     genresList: [],
-
     isLoading: true,
     isError: false,
     notFound: false,
@@ -27,6 +26,7 @@ export default class App extends Component {
     totalPages: 1,
     guestSessionId: '',
     tabPane: '1',
+    // eslint-disable-next-line react/no-unused-state
     rating: 0,
   };
 
@@ -237,18 +237,13 @@ export default class App extends Component {
   };
 
   render() {
-    const { movies, isLoading, isError, notFound, totalPages, numberPage, guestSessionId, tabPane, rating, ratedFilm } =
+    const { movies, isLoading, isError, notFound, totalPages, numberPage, guestSessionId, tabPane, ratedFilm } =
       this.state;
     const error = isError ? (
       <Alert message="Error" description="Что-то пошло не так. Но мы скоро все исправим :-)" type="error" showIcon />
     ) : null;
     const notFoundMovies = notFound ? <Empty /> : null;
-    const cardList =
-      tabPane === '1' ? (
-        <CardList movieDataFromBase={movies} guestSessionId={guestSessionId} />
-      ) : (
-        <CardList movieDataFromBase={ratedFilm} guestSessionId={guestSessionId} rating={rating} />
-      );
+
     const spin = isLoading && !isError ? <Spin size="large" /> : null;
 
     const search = tabPane === '1' ? <Search onInputChange={this.onInputChange} /> : null;
@@ -259,15 +254,18 @@ export default class App extends Component {
       ) : null;
     return (
       <>
-        <Header onTabChange={this.onTabChange} />
-        {search}
-        <Space direction="vertical" className="app" align="center">
-          {spin}
-          {cardList}
-          {notFoundMovies}
-          {error}
-          {pagination}
-        </Space>
+        <Context.Provider value={{ movies, ratedFilm, tabPane, guestSessionId }}>
+          <Header onTabChange={this.onTabChange} />
+          {search}
+
+          <Space direction="vertical" className="app" align="center">
+            {spin}
+            <CardList />
+            {notFoundMovies}
+            {error}
+            {pagination}
+          </Space>
+        </Context.Provider>
       </>
     );
   }
