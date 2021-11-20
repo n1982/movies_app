@@ -16,20 +16,34 @@ export default class App extends Component {
   state = {
     movies: [],
     ratedFilm: [],
+    // eslint-disable-next-line react/no-unused-state
+    genresList: [],
+
     isLoading: true,
     isError: false,
     notFound: false,
     searchQuery: '',
     numberPage: 1,
     totalPages: 1,
-    guestSessionId: 1,
+    guestSessionId: '',
     tabPane: '1',
     rating: 0,
   };
 
   componentDidMount() {
     this.createGuestSession();
+    this.getGenresList();
   }
+
+  getGenresList = () => {
+    const callMovieDbService = new MovieDbService();
+    callMovieDbService.getGenersList().then((body) => {
+      this.setState({
+        // eslint-disable-next-line react/no-unused-state
+        genresList: [...body.genres],
+      });
+    });
+  };
 
   createGuestSession = () => {
     const callMovieDbService = new MovieDbService();
@@ -176,6 +190,22 @@ export default class App extends Component {
     });
   };
 
+  getGenresFilm = (genresIds) => {
+    const filmGenres = [];
+    const { genresList } = this.state;
+    // eslint-disable-next-line prefer-const
+    for (let genreId of genresIds) {
+      // eslint-disable-next-line react/destructuring-assignment
+      genresList.forEach((el) => {
+        if (el.id === genreId) {
+          filmGenres.push(el.name);
+        }
+      });
+    }
+
+    return filmGenres;
+  };
+
   createTodoItem = (item) => {
     const releaseDate = item.release_date ? format(parseISO(item.release_date), 'MMMM dd, yyyy') : 'no release date';
     const filmTitle = item.title || 'Movie title not specified';
@@ -186,7 +216,7 @@ export default class App extends Component {
     if (item.poster_path) {
       posterURL = `https://image.tmdb.org/t/p/w185${item.poster_path}`;
     }
-
+    const genres = this.getGenresFilm(item.genre_ids);
     return {
       id: item.id,
       filmTitle,
@@ -195,6 +225,7 @@ export default class App extends Component {
       overview,
       popularity,
       rating,
+      genres,
     };
   };
 
