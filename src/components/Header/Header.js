@@ -1,28 +1,20 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Tabs } from 'antd';
 
 import './Header.css';
 
-export default class Header extends Component {
-  state = {};
+// eslint-disable-next-line react/prop-types
+const Header = ({ onTabChange }) => {
+  const { TabPane } = Tabs;
 
-  // eslint-disable-next-line no-console
-  onSearch = (value) => console.log(value);
+  return (
+    <div className="header">
+      <Tabs defaultActiveKey="1" onChange={onTabChange}>
+        <TabPane tab="Search" key="1" />
+        <TabPane tab="Rated" key="2" />
+      </Tabs>
+    </div>
+  );
+};
 
-  // eslint-disable-next-line no-console
-  callback = (key) => console.log(key);
-
-  render() {
-    const { TabPane } = Tabs;
-
-    return (
-      <div className="header">
-        <Tabs defaultActiveKey="1" onChange={this.callback}>
-          <TabPane tab="Search" key="1" />
-
-          <TabPane tab="Rated" key="2" />
-        </Tabs>
-      </div>
-    );
-  }
-}
+export default Header;
