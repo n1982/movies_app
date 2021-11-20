@@ -44,7 +44,6 @@ export default class MovieDbService {
 
   setMovieRating = async (id, guestSessionToken, rate) => {
     const url = `${this.baseUrl}movie/${id}/rating?api_key=${this.apiKey}&guest_session_id=${guestSessionToken}`;
-    console.log('отсылаем запрос');
     const body = {
       value: rate,
     };
@@ -52,12 +51,10 @@ export default class MovieDbService {
       method: 'POST',
       headers: { 'Content-Type': 'application/json;charset=utf-8' },
       body: JSON.stringify(body),
+    }).catch((err) => {
+      // eslint-disable-next-line no-console
+      console.error('Возникла проблема с fetch запросом: ', err.message);
     });
-    // todo разобраться как обрабатывать пост запрос дальше
-    // .then((res) => res)
-    // .catch((err) => {
-    //   console.error('Возникла проблема с fetch запросом: ', err.message);
-    // });
   };
 
   deleteRateMovie = async (id, guestSessionToken) => {

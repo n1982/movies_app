@@ -27,7 +27,7 @@ export default class RateStars extends Component {
     this.setState({
       ratingValue: rate,
     });
-    // todo добавить catch
+
     callMovieDbService.setMovieRating(id, guestSessionId, rate);
   };
 

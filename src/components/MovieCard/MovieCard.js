@@ -12,7 +12,7 @@ const MovieCard = ({ movieDataFromBase, guestSessionId }) => {
     const { posterURL, id, filmTitle, releaseDate, overview, popularity, rating } = item;
     const tag1 = 'Action';
     const tag2 = 'Action';
-    console.log(rating);
+
     function truncate(numberSymbols, useWordBoundary) {
       if (this.length <= numberSymbols) {
         return this;
@@ -23,11 +23,22 @@ const MovieCard = ({ movieDataFromBase, guestSessionId }) => {
 
     const overviewTruncated = truncate.apply(overview, [200, true]);
 
+    const inputClasses = ['stars-count'];
+    if (popularity >= 3 && popularity < 5) {
+      inputClasses.push('orange');
+    }
+    if (popularity >= 5 && popularity < 7) {
+      inputClasses.push('yellow');
+    }
+    if (popularity >= 7) {
+      inputClasses.push('green');
+    }
+
     return (
       <Card key={id} hoverable cover={<img alt="example" src={posterURL} />}>
         <div className="card-title">
           <p className="card-film-title">{filmTitle}</p>
-          <div className="stars-count">{popularity.toFixed(1)}</div>
+          <div className={inputClasses.join(' ')}>{popularity.toFixed(1)}</div>
         </div>
         <Text type="secondary">{releaseDate}</Text>
         <div className="card-tags">
