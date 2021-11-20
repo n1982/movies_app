@@ -68,4 +68,11 @@ export default class MovieDbService {
       headers: headers,
     });
   };
+
+  getGenersList = async () => {
+    const url = `${this.baseUrl}genre/movie/list?api_key=${this.apiKey}`;
+    const body = await this.getDataFromServer(url);
+
+    return body;
+  };
 }

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Alert, Empty, Pagination, Space, Spin } from 'antd';
 import { format, parseISO } from 'date-fns';
+import { Context } from '../GenresContext/GenresContext';
 
 import MovieDbService from '../../services/MovieDbService';
 import Header from '../Header';
@@ -16,20 +17,33 @@ export default class App extends Component {
   state = {
     movies: [],
     ratedFilm: [],
+    genresList: [],
     isLoading: true,
     isError: false,
     notFound: false,
     searchQuery: '',
     numberPage: 1,
     totalPages: 1,
-    guestSessionId: 1,
+    guestSessionId: '',
     tabPane: '1',
+    // eslint-disable-next-line react/no-unused-state
     rating: 0,
   };
 
   componentDidMount() {
     this.createGuestSession();
+    this.getGenresList();
   }
+
+  getGenresList = () => {
+    const callMovieDbService = new MovieDbService();
+    callMovieDbService.getGenersList().then((body) => {
+      this.setState({
+        // eslint-disable-next-line react/no-unused-state
+        genresList: [...body.genres],
+      });
+    });
+  };
 
   createGuestSession = () => {
     const callMovieDbService = new MovieDbService();
@@ -176,6 +190,22 @@ export default class App extends Component {
     });
   };
 
+  getGenresFilm = (genresIds) => {
+    const filmGenres = [];
+    const { genresList } = this.state;
+    // eslint-disable-next-line prefer-const
+    for (let genreId of genresIds) {
+      // eslint-disable-next-line react/destructuring-assignment
+      genresList.forEach((el) => {
+        if (el.id === genreId) {
+          filmGenres.push(el.name);
+        }
+      });
+    }
+
+    return filmGenres;
+  };
+
   createTodoItem = (item) => {
     const releaseDate = item.release_date ? format(parseISO(item.release_date), 'MMMM dd, yyyy') : 'no release date';
     const filmTitle = item.title || 'Movie title not specified';
@@ -186,7 +216,7 @@ export default class App extends Component {
     if (item.poster_path) {
       posterURL = `https://image.tmdb.org/t/p/w185${item.poster_path}`;
     }
-
+    const genres = this.getGenresFilm(item.genre_ids);
     return {
       id: item.id,
       filmTitle,
@@ -195,6 +225,7 @@ export default class App extends Component {
       overview,
       popularity,
       rating,
+      genres,
     };
   };
 
@@ -206,18 +237,13 @@ export default class App extends Component {
   };
 
   render() {
-    const { movies, isLoading, isError, notFound, totalPages, numberPage, guestSessionId, tabPane, rating, ratedFilm } =
+    const { movies, isLoading, isError, notFound, totalPages, numberPage, guestSessionId, tabPane, ratedFilm } =
       this.state;
     const error = isError ? (
       <Alert message="Error" description="Что-то пошло не так. Но мы скоро все исправим :-)" type="error" showIcon />
     ) : null;
     const notFoundMovies = notFound ? <Empty /> : null;
-    const cardList =
-      tabPane === '1' ? (
-        <CardList movieDataFromBase={movies} guestSessionId={guestSessionId} />
-      ) : (
-        <CardList movieDataFromBase={ratedFilm} guestSessionId={guestSessionId} rating={rating} />
-      );
+
     const spin = isLoading && !isError ? <Spin size="large" /> : null;
 
     const search = tabPane === '1' ? <Search onInputChange={this.onInputChange} /> : null;
@@ -228,15 +254,18 @@ export default class App extends Component {
       ) : null;
     return (
       <>
-        <Header onTabChange={this.onTabChange} />
-        {search}
-        <Space direction="vertical" className="app" align="center">
-          {spin}
-          {cardList}
-          {notFoundMovies}
-          {error}
-          {pagination}
-        </Space>
+        <Context.Provider value={{ movies, ratedFilm, tabPane, guestSessionId }}>
+          <Header onTabChange={this.onTabChange} />
+          {search}
+
+          <Space direction="vertical" className="app" align="center">
+            {spin}
+            <CardList />
+            {notFoundMovies}
+            {error}
+            {pagination}
+          </Space>
+        </Context.Provider>
       </>
     );
   }

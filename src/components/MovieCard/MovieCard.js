@@ -1,17 +1,19 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { Card, Tag, Typography } from 'antd';
 import RateStars from '../RateStars';
+import { Context } from '../GenresContext/GenresContext';
 
 import './MovieCard.css';
 
-const MovieCard = ({ movieDataFromBase, guestSessionId }) => {
+const MovieCard = () => {
   const { Text } = Typography;
+  // eslint-disable-next-line no-unused-vars
+  const { movies, ratedFilm, tabPane, guestSessionId } = useContext(Context);
+  const movieDataFromBase = tabPane === '1' ? movies : ratedFilm;
 
   const listElements = movieDataFromBase.map((item) => {
-    const { posterURL, id, filmTitle, releaseDate, overview, popularity, rating } = item;
-    const tag1 = 'Action';
-    const tag2 = 'Action';
+    const { posterURL, id, filmTitle, releaseDate, overview, popularity, rating, genres } = item;
 
     function truncate(numberSymbols, useWordBoundary) {
       if (this.length <= numberSymbols) {
@@ -34,6 +36,19 @@ const MovieCard = ({ movieDataFromBase, guestSessionId }) => {
       inputClasses.push('green');
     }
 
+    const filmGenres = (
+      <>
+        {/* eslint-disable-next-line arrow-body-style */}
+        {genres.map((genre) => {
+          return (
+            <Tag className="ant-card-body_genre-item" key={genre}>
+              {genre}
+            </Tag>
+          );
+        })}
+      </>
+    );
+
     return (
       <Card key={id} hoverable cover={<img alt="example" src={posterURL} />}>
         <div className="card-title">
@@ -41,10 +56,7 @@ const MovieCard = ({ movieDataFromBase, guestSessionId }) => {
           <div className={inputClasses.join(' ')}>{popularity.toFixed(1)}</div>
         </div>
         <Text type="secondary">{releaseDate}</Text>
-        <div className="card-tags">
-          <Tag>{tag1}</Tag>
-          <Tag>{tag2}</Tag>
-        </div>
+        <div className="card-tags">{filmGenres}</div>
         <Text>{overviewTruncated}</Text>
         <RateStars id={id} guestSessionId={guestSessionId} rating={rating} />
       </Card>
