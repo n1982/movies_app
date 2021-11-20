@@ -1,3 +1,5 @@
+
+
 .ant-card {
     max-width: 454px;
     max-height: 281px;
@@ -70,13 +72,25 @@ ul.ant-rate {
 
 .stars-count {
     display: flex;
-    border: 2px solid #EEDC40;
+    border: 2px solid #E90000;
     width: 35px;
     height: 35px;
     border-radius: 50%;
     font-size: 11px;
     justify-content: center;
     align-items: center;
+}
 
 
+
+.stars-count.orange{
+    border-color: #E97E00;
+}
+
+.stars-count.yellow{
+    border-color: #E9D100;
+}
+
+.stars-count.green{
+    border-color: #66E900;
 }

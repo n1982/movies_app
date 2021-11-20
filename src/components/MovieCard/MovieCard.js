@@ -1,16 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Card, Tag, Typography } from 'antd';
+import RateStars from '../RateStars';
+
 import './MovieCard.css';
-import { Card, Rate, Tag, Typography } from 'antd';
 
-const { Text } = Typography;
+const MovieCard = ({ movieDataFromBase, guestSessionId }) => {
+  const { Text } = Typography;
 
-const MovieCard = ({ movieDataFromBase }) => {
   const listElements = movieDataFromBase.map((item) => {
+    const { posterURL, id, filmTitle, releaseDate, overview, popularity, rating } = item;
     const tag1 = 'Action';
     const tag2 = 'Action';
-
-    const { posterURL, id, filmTitle, releaseDate, overview, popularity } = item;
 
     function truncate(numberSymbols, useWordBoundary) {
       if (this.length <= numberSymbols) {
@@ -21,13 +22,23 @@ const MovieCard = ({ movieDataFromBase }) => {
     }
 
     const overviewTruncated = truncate.apply(overview, [200, true]);
-    const popularityRounding = Math.floor(popularity * 10) / 10;
+
+    const inputClasses = ['stars-count'];
+    if (popularity >= 3 && popularity < 5) {
+      inputClasses.push('orange');
+    }
+    if (popularity >= 5 && popularity < 7) {
+      inputClasses.push('yellow');
+    }
+    if (popularity >= 7) {
+      inputClasses.push('green');
+    }
 
     return (
       <Card key={id} hoverable cover={<img alt="example" src={posterURL} />}>
         <div className="card-title">
           <p className="card-film-title">{filmTitle}</p>
-          <div className="stars-count">{popularityRounding}</div>
+          <div className={inputClasses.join(' ')}>{popularity.toFixed(1)}</div>
         </div>
         <Text type="secondary">{releaseDate}</Text>
         <div className="card-tags">
@@ -35,20 +46,20 @@ const MovieCard = ({ movieDataFromBase }) => {
           <Tag>{tag2}</Tag>
         </div>
         <Text>{overviewTruncated}</Text>
-        <Rate count={10} />
+        <RateStars id={id} guestSessionId={guestSessionId} rating={rating} />
       </Card>
     );
   });
 
   return listElements;
 };
-
 MovieCard.defaultProps = {
   movieDataFromBase: [],
+  guestSessionId: '',
 };
 
 MovieCard.propTypes = {
   movieDataFromBase: PropTypes.instanceOf(Array),
+  guestSessionId: PropTypes.string,
 };
-
 export default MovieCard;

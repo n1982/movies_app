@@ -1,7 +1,6 @@
+/* eslint-disable object-shorthand */
 export default class MovieDbService {
   apiKey = '9420f971c77382011b10789475bfd7fa';
-
-  guestKey = 'e367f89276658b5e9b5eac064beb6ede';
 
   baseUrl = 'https://api.themoviedb.org/3/';
 
@@ -23,15 +22,50 @@ export default class MovieDbService {
     }
   };
 
-  getMovies = async (searchQuery = 'return', pageNumber = 1) => {
+  searchMovies = async (searchQuery = 'return', pageNumber = 1) => {
     const url = `${this.baseUrl}search/movie?api_key=${this.apiKey}&page=10&include_adult=false&query=${searchQuery}&page=${pageNumber}`;
     const body = await this.getDataFromServer(url);
     return body;
   };
 
+  getRatedMovies = async (guestSessionToken) => {
+    const url = `${this.baseUrl}guest_session/${guestSessionToken}/rated/movies?api_key=${this.apiKey}`;
+
+    const body = await this.getDataFromServer(url);
+
+    return body;
+  };
+
   guestSession = async () => {
-    const url = `${this.baseUrl}search/movie?api_key=${this.guestKey}`;
+    const url = `${this.baseUrl}authentication/guest_session/new?api_key=${this.apiKey}`;
     const body = await this.getDataFromServer(url);
     return body;
+  };
+
+  setMovieRating = async (id, guestSessionToken, rate) => {
+    const url = `${this.baseUrl}movie/${id}/rating?api_key=${this.apiKey}&guest_session_id=${guestSessionToken}`;
+    const body = {
+      value: rate,
+    };
+    await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json;charset=utf-8' },
+      body: JSON.stringify(body),
+    }).catch((err) => {
+      // eslint-disable-next-line no-console
+      console.error('Возникла проблема с fetch запросом: ', err.message);
+    });
+  };
+
+  deleteRateMovie = async (id, guestSessionToken) => {
+    const url = `${this.baseUrl}movie/${id}/rating?api_key=${this.apiKey}&guest_session_id=${guestSessionToken}`;
+
+    const headers = {
+      'Content-Type': 'application/json;charset=utf-8',
+    };
+    await fetch(url, {
+      method: 'DELETE',
+      headers: headers,
+    });
   };
 }
