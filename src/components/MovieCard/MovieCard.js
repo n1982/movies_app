@@ -9,9 +9,7 @@ const MovieCard = ({ movieDataFromBase, guestSessionId }) => {
   const { Text } = Typography;
 
   const listElements = movieDataFromBase.map((item) => {
-    const { posterURL, id, filmTitle, releaseDate, overview, popularity, rating } = item;
-    const tag1 = 'Action';
-    const tag2 = 'Action';
+    const { posterURL, id, filmTitle, releaseDate, overview, popularity, rating, genres } = item;
 
     function truncate(numberSymbols, useWordBoundary) {
       if (this.length <= numberSymbols) {
@@ -34,6 +32,19 @@ const MovieCard = ({ movieDataFromBase, guestSessionId }) => {
       inputClasses.push('green');
     }
 
+    const filmGenres = (
+      <>
+        {/* eslint-disable-next-line arrow-body-style */}
+        {genres.map((genre) => {
+          return (
+            <Tag className="ant-card-body_genre-item" key={id}>
+              {genre}
+            </Tag>
+          );
+        })}
+      </>
+    );
+
     return (
       <Card key={id} hoverable cover={<img alt="example" src={posterURL} />}>
         <div className="card-title">
@@ -41,10 +52,7 @@ const MovieCard = ({ movieDataFromBase, guestSessionId }) => {
           <div className={inputClasses.join(' ')}>{popularity.toFixed(1)}</div>
         </div>
         <Text type="secondary">{releaseDate}</Text>
-        <div className="card-tags">
-          <Tag>{tag1}</Tag>
-          <Tag>{tag2}</Tag>
-        </div>
+        <div className="card-tags">{filmGenres}</div>
         <Text>{overviewTruncated}</Text>
         <RateStars id={id} guestSessionId={guestSessionId} rating={rating} />
       </Card>
