@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { Alert, Empty, Pagination, Space, Spin } from 'antd';
+// eslint-disable-next-line no-unused-vars
+import { Alert, Empty, Layout, Pagination, Space, Spin } from 'antd';
 import { format, parseISO } from 'date-fns';
 import { Context } from '../GenresContext/GenresContext';
 
@@ -23,7 +24,7 @@ export default class App extends Component {
     notFound: false,
     searchQuery: '',
     numberPage: 1,
-    totalPages: 1,
+    totalPages: 0,
     guestSessionId: '',
     tabPane: '1',
     // eslint-disable-next-line react/no-unused-state
@@ -237,36 +238,39 @@ export default class App extends Component {
   };
 
   render() {
+    // eslint-disable-next-line no-unused-vars
+    const { Footer, Sider, Content } = Layout;
     const { movies, isLoading, isError, notFound, totalPages, numberPage, guestSessionId, tabPane, ratedFilm } =
       this.state;
     const error = isError ? (
       <Alert message="Error" description="Что-то пошло не так. Но мы скоро все исправим :-)" type="error" showIcon />
     ) : null;
-    const notFoundMovies = notFound ? <Empty /> : null;
+    const foundMovies = notFound ? <Empty /> : <CardList />;
 
-    const spin = isLoading && !isError ? <Spin size="large" /> : null;
+    const spin = isLoading && !isError ? <Spin tip="Loading..." size="large" /> : null;
 
     const search = tabPane === '1' ? <Search onInputChange={this.onInputChange} /> : null;
-
     const pagination =
-      tabPane === '1' ? (
+      tabPane === '1' && totalPages > 0 && !isLoading ? (
         <Pagination defaultCurrent={1} current={numberPage} total={totalPages * 10} onChange={this.onPageChange} />
       ) : null;
     return (
-      <>
-        <Context.Provider value={{ movies, ratedFilm, tabPane, guestSessionId }}>
-          <Header onTabChange={this.onTabChange} />
-          {search}
-
-          <Space direction="vertical" className="app" align="center">
-            {spin}
-            <CardList />
-            {notFoundMovies}
-            {error}
-            {pagination}
-          </Space>
-        </Context.Provider>
-      </>
+      <div className="container">
+        <Layout>
+          <Context.Provider value={{ movies, ratedFilm, tabPane, guestSessionId }}>
+            <Content>
+              <Header onTabChange={this.onTabChange} />
+              {search}
+              <Space direction="vertical" align="center">
+                {spin}
+                {foundMovies}
+                {error}
+                {pagination}
+              </Space>
+            </Content>
+          </Context.Provider>
+        </Layout>
+      </div>
     );
   }
 }
