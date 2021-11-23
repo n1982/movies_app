@@ -25,7 +25,7 @@ const MovieCard = () => {
 
     const overviewTruncated = truncate.apply(overview, [200, true]);
 
-    const inputClasses = ['stars-count'];
+    const inputClasses = ['card-popularity-count'];
     if (popularity >= 3 && popularity < 5) {
       inputClasses.push('orange');
     }
@@ -41,7 +41,7 @@ const MovieCard = () => {
         {/* eslint-disable-next-line arrow-body-style */}
         {genres.map((genre) => {
           return (
-            <Tag className="ant-card-body_genre-item" key={genre}>
+            <Tag className="card-genres-tag" key={genre}>
               {genre}
             </Tag>
           );
@@ -50,14 +50,17 @@ const MovieCard = () => {
     );
 
     return (
-      <Card key={id} hoverable cover={<img alt="example" src={posterURL} />}>
-        <div className="card-title">
-          <p className="card-film-title">{filmTitle}</p>
-          <div className={inputClasses.join(' ')}>{popularity.toFixed(1)}</div>
-        </div>
-        <Text type="secondary">{releaseDate}</Text>
+      <Card hoverable key={id}>
+        <img className="card-img" alt={`poster ${filmTitle}`} src={posterURL} />
+
+        <p className="card-movie-title">{filmTitle}</p>
+        <div className={inputClasses.join(' ')}>{popularity.toFixed(1)}</div>
+
+        <Text type="secondary" className="card-release-date">
+          {releaseDate}
+        </Text>
         <div className="card-tags">{filmGenres}</div>
-        <Text>{overviewTruncated}</Text>
+        <Text className="card-overview">{overviewTruncated}</Text>
         <RateStars id={id} guestSessionId={guestSessionId} rating={rating} />
       </Card>
     );
