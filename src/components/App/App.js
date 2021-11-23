@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-// eslint-disable-next-line no-unused-vars
+
 import { Alert, Empty, Layout, Pagination, Space, Spin } from 'antd';
 import { format, parseISO } from 'date-fns';
 import { Context } from '../GenresContext/GenresContext';
@@ -215,7 +215,7 @@ export default class App extends Component {
     const rating = item.rating || 0;
     let posterURL = `${outOfPosterImg}`;
     if (item.poster_path) {
-      posterURL = `https://image.tmdb.org/t/p/w185${item.poster_path}`;
+      posterURL = `https://image.tmdb.org/t/p/w200${item.poster_path}`;
     }
     const genres = this.getGenresFilm(item.genre_ids);
     return {
@@ -239,7 +239,7 @@ export default class App extends Component {
 
   render() {
     // eslint-disable-next-line no-unused-vars
-    const { Footer, Sider, Content } = Layout;
+    const { Content } = Layout;
     const { movies, isLoading, isError, notFound, totalPages, numberPage, guestSessionId, tabPane, ratedFilm } =
       this.state;
     const error = isError ? (
