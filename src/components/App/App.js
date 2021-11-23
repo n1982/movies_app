@@ -38,23 +38,41 @@ export default class App extends Component {
 
   getGenresList = () => {
     const callMovieDbService = new MovieDbService();
-    callMovieDbService.getGenersList().then((body) => {
-      this.setState({
-        // eslint-disable-next-line react/no-unused-state
-        genresList: [...body.genres],
+    callMovieDbService
+      .getGenersList()
+      .then((body) => {
+        this.setState({
+          // eslint-disable-next-line react/no-unused-state
+          genresList: [...body.genres],
+        });
+      })
+      .catch(() => {
+        this.setState({
+          isLoading: false,
+          notFound: false,
+          isError: true,
+        });
       });
-    });
   };
 
   createGuestSession = () => {
     const callMovieDbService = new MovieDbService();
-    callMovieDbService.guestSession().then((body) => {
-      this.setState({
-        // eslint-disable-next-line react/no-unused-state
-        guestSessionId: body.guest_session_id,
-        isLoading: false,
+    callMovieDbService
+      .guestSession()
+      .then((body) => {
+        this.setState({
+          // eslint-disable-next-line react/no-unused-state
+          guestSessionId: body.guest_session_id,
+          isLoading: false,
+        });
+      })
+      .catch(() => {
+        this.setState({
+          isLoading: false,
+          notFound: false,
+          isError: true,
+        });
       });
-    });
   };
 
   searchMoviesData = () => {
