@@ -6,11 +6,6 @@ import './RateStars.css';
 import MovieDbService from '../../services/MovieDbService';
 
 export default class RateStars extends Component {
-  state = {
-    // eslint-disable-next-line react/no-unused-state,react/destructuring-assignment,react/prop-types
-    ratingValue: this.props.rating,
-  };
-
   static defaultProps = {
     guestSessionId: '',
     id: 0,
@@ -19,6 +14,11 @@ export default class RateStars extends Component {
   static propTypes = {
     guestSessionId: PropTypes.string,
     id: PropTypes.number,
+  };
+
+  state = {
+    // eslint-disable-next-line react/no-unused-state,react/destructuring-assignment,react/prop-types
+    ratingValue: this.props.rating,
   };
 
   setMovieRating = (rate) => {

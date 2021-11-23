@@ -7,13 +7,15 @@
 
     position: relative;
     padding: 0 36px;
-    background-color:#FFF;
+    background-color: #FFF;
 }
-.container .ant-layout{
+
+.container .ant-layout {
     min-height: 100vh;
     background: #FFFFFF;
-   }
-.ant-space{
+}
+
+.ant-space {
     width: 100%;
     padding-top: 20px;
 

@@ -2,8 +2,6 @@
 div .ant-card-body {
 
     display: grid;
-    /*grid-template-columns: minmax(142px, 0.8fr) 1fr 50px;*/
-    /*grid-auto-rows: 50px 20px 0.5fr auto 50px;*/
     grid-column-gap: 5px;
     grid-auto-rows: auto;
     background-color: #FFFFFF;
@@ -14,7 +12,7 @@ div .ant-card-body {
 
 
 div .ant-card-body::before,
-div .ant-card-body::after{
+div .ant-card-body::after {
     display: none;
 }
 
@@ -24,14 +22,10 @@ div .ant-card-body::after{
     object-fit: cover;
     grid-column: 1/2;
     grid-row: 1/6;
-
-
-
-
 }
 
-@media (max-width: 500px ){
-    .card-img{
+@media (max-width: 500px ) {
+    .card-img {
         height: unset;
         max-width: 100%;
         max-height: 100%;
@@ -39,14 +33,14 @@ div .ant-card-body::after{
     }
 }
 
-.card-movie-title{
+.card-movie-title {
     grid-column: 2/3;
     grid-row: 1/2;
     margin-bottom: 0;
     font-size: 20px;
 }
 
-.card-popularity-count{
+.card-popularity-count {
     grid-column: 3/4;
     grid-row: 1/2;
     display: flex;
@@ -61,6 +55,7 @@ div .ant-card-body::after{
     justify-self: end;
     align-self: start;
 }
+
 .card-popularity-count.orange {
     border-color: #E97E00;
 }
@@ -73,7 +68,7 @@ div .ant-card-body::after{
     border-color: #66E900;
 }
 
-.card-release-date{
+.card-release-date {
     grid-column: 2/4;
     grid-row: 2/3;
     margin-top: 5px;
@@ -90,11 +85,11 @@ div .ant-card-body::after{
     align-self: start;
 }
 
-.ant-tag.card-genres-tag{
+.ant-tag.card-genres-tag {
     margin-top: 2px;
 }
 
-.card-overview{
+.card-overview {
     grid-column: 2/4;
     grid-row: 4/5;
     font-size: 14px;
@@ -102,22 +97,23 @@ div .ant-card-body::after{
     justify-self: stretch;
 }
 
-@media (max-width: 500px ){
-    .card-overview{
+@media (max-width: 500px ) {
+    .card-overview {
         grid-column: 1/4;
     }
 }
-ul.ant-rate{
+
+ul.ant-rate {
     grid-column: 2/4;
     grid-row: 5/6;
-
     font-size: 100%;
     align-self: end;
     justify-self: end;
 
 }
-@media (max-width: 500px ){
-    ul.ant-rate{
+
+@media (max-width: 500px ) {
+    ul.ant-rate {
         grid-column: 1/4;
         font-size: 14px
 

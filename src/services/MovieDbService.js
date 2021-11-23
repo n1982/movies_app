@@ -4,9 +4,6 @@ export default class MovieDbService {
 
   baseUrl = 'https://api.themoviedb.org/3/';
 
-  // url = `https://api.themoviedb.org/3/search/movie?api_key=${this.apiKey}&page=10&include_adult=false&query=return`;
-
-  // eslint-disable-next-line no-unused-vars
   getDataFromServer = async (url) => {
     try {
       const res = await fetch(url);
