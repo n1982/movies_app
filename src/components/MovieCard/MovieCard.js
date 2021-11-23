@@ -53,8 +53,8 @@ const MovieCard = () => {
       <Card hoverable key={id}>
         <img className="card-img" alt={`poster ${filmTitle}`} src={posterURL} />
 
-        <p className="card-movie-title">{filmTitle}</p>
-        <div className={inputClasses.join(' ')}>{popularity.toFixed(1)}</div>
+        <div className="card-movie-title">{filmTitle}</div>
+        <span className={inputClasses.join(' ')}>{popularity.toFixed(1)}</span>
 
         <Text type="secondary" className="card-release-date">
           {releaseDate}
