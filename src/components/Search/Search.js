@@ -18,9 +18,7 @@ export default class Search extends Component {
   onSearch = (event) => {
     const { onInputChange } = this.props;
     const trimUserRequest = event.target.value.replace(/ +/g, ' ').trim();
-    if (trimUserRequest !== '') {
-      onInputChange(trimUserRequest);
-    }
+    onInputChange(trimUserRequest);
   };
 
   render() {

@@ -34,6 +34,7 @@ export default class App extends Component {
   componentDidMount() {
     this.createGuestSession();
     this.getGenresList();
+    this.getPopularMovies();
   }
 
   static getDerivedStateFromError() {
@@ -84,7 +85,6 @@ export default class App extends Component {
   };
 
   searchMoviesData = () => {
-    // eslint-disable-next-line no-unused-vars
     const { searchQuery, numberPage } = this.state;
     const callMovieDbService = new MovieDbService();
     this.setState({
@@ -93,8 +93,49 @@ export default class App extends Component {
       notFound: false,
       isError: false,
     });
+
+    if (searchQuery === '') {
+      this.getPopularMovies();
+    } else {
+      callMovieDbService
+        .searchMovies(searchQuery, numberPage)
+        .then((item) => {
+          this.setState({
+            // eslint-disable-next-line react/no-unused-state
+            totalPages: item.total_pages,
+            numberPage,
+          });
+          if (item.results.length === 0) {
+            this.setState({
+              isLoading: false,
+              notFound: true,
+            });
+          }
+          item.results.forEach((elm) => {
+            this.addItem(elm);
+          });
+        })
+        .catch(() => {
+          this.setState({
+            isLoading: false,
+            notFound: false,
+            isError: true,
+          });
+        });
+    }
+  };
+
+  getPopularMovies = () => {
+    const { numberPage } = this.state;
+    const callMovieDbService = new MovieDbService();
+    this.setState({
+      movies: [],
+      isLoading: true,
+      notFound: false,
+      isError: false,
+    });
     callMovieDbService
-      .searchMovies(searchQuery, numberPage)
+      .getPopularMovies(numberPage)
       .then((item) => {
         this.setState({
           // eslint-disable-next-line react/no-unused-state
@@ -276,6 +317,7 @@ export default class App extends Component {
     const spin = isLoading && !isError ? <Spin tip="Loading..." size="large" /> : null;
 
     const search = tabPane === '1' ? <Search onInputChange={this.onInputChange} /> : null;
+
     const pagination =
       tabPane === '1' && totalPages > 0 && !isLoading ? (
         <Pagination defaultCurrent={1} current={numberPage} total={totalPages * 10} onChange={this.onPageChange} />
