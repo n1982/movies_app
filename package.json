@@ -26,16 +26,12 @@
     "lint-staged": "lint-staged",
     "prepare": "husky install"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
   "lint-staged": {
     "*.(js|jsx)": [
       "npm run lint:fix",
       "git add"
-    ]
+    ],
+    "*.js": "prettier --write"
   },
   "eslintConfig": {
     "extends": [

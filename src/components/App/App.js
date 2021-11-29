@@ -36,6 +36,14 @@ export default class App extends Component {
     this.getGenresList();
   }
 
+  static getDerivedStateFromError() {
+    return { isError: true };
+  }
+
+  componentDidCatch(error, info) {
+    console.error(info.componentStack);
+  }
+
   getGenresList = () => {
     const callMovieDbService = new MovieDbService();
     callMovieDbService
