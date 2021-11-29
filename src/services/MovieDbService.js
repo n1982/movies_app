@@ -1,4 +1,3 @@
-/* eslint-disable object-shorthand */
 export default class MovieDbService {
   apiKey = '9420f971c77382011b10789475bfd7fa';
 
@@ -58,7 +57,7 @@ export default class MovieDbService {
     };
     await fetch(url, {
       method: 'DELETE',
-      headers: headers,
+      headers,
     });
   };
 

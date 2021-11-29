@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import store from 'store';
 
 import { Alert, Empty, Layout, Pagination, Space, Spin } from 'antd';
 import { format, parseISO } from 'date-fns';
@@ -42,6 +43,7 @@ export default class App extends Component {
   }
 
   componentDidCatch(error, info) {
+    // eslint-disable-next-line no-console
     console.error(info.componentStack);
   }
 
@@ -112,7 +114,7 @@ export default class App extends Component {
             });
           }
           item.results.forEach((elm) => {
-            this.addItem(elm);
+            this.addItemToList(elm);
           });
         })
         .catch(() => {
@@ -149,7 +151,7 @@ export default class App extends Component {
           });
         }
         item.results.forEach((elm) => {
-          this.addItem(elm);
+          this.addItemToList(elm);
         });
       })
       .catch(() => {
@@ -234,8 +236,8 @@ export default class App extends Component {
     );
   };
 
-  addItem = (item) => {
-    const newItem = this.createTodoItem(item);
+  addItemToList = (item) => {
+    const newItem = this.createItem(item);
 
     this.setState(({ movies }) => {
       const newDataStream = [...movies, newItem];
@@ -247,7 +249,7 @@ export default class App extends Component {
   };
 
   addRatedItem = (item) => {
-    const newItem = this.createTodoItem(item);
+    const newItem = this.createItem(item);
 
     this.setState(({ ratedFilm }) => {
       const newDataStream = [...ratedFilm, newItem];
@@ -274,17 +276,22 @@ export default class App extends Component {
     return filmGenres;
   };
 
-  createTodoItem = (item) => {
+  createItem = (item) => {
+    const { guestSessionId } = this.state;
+    const callMovieDbService = new MovieDbService();
     const releaseDate = item.release_date ? format(parseISO(item.release_date), 'MMMM dd, yyyy') : 'no release date';
     const filmTitle = item.title || 'Movie title not specified';
     const overview = item.overview || 'Movie overview not specified';
-    const popularity = item.popularity || 0;
-    const rating = item.rating || 0;
+    const popularity = item.vote_average || 0;
+    const rating = store.get(`${item.id}`) || item.rating || 0;
+
     let posterURL = `${outOfPosterImg}`;
     if (item.poster_path) {
       posterURL = `https://image.tmdb.org/t/p/w200${item.poster_path}`;
     }
     const genres = this.getGenresFilm(item.genre_ids);
+    if (store.get(`${item.id}`) > 0) callMovieDbService.setMovieRating(item.id, guestSessionId, rating);
+
     return {
       id: item.id,
       filmTitle,
