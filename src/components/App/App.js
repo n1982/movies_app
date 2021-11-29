@@ -33,7 +33,14 @@ export default class App extends Component {
   };
 
   componentDidMount() {
-    this.createGuestSession();
+    if (!store.get('guestSessionId')) {
+      this.createGuestSession();
+    } else {
+      this.setState({
+        guestSessionId: store.get('guestSessionId'),
+      });
+    }
+
     this.getGenresList();
     this.getPopularMovies();
   }
@@ -71,6 +78,7 @@ export default class App extends Component {
     callMovieDbService
       .guestSession()
       .then((body) => {
+        store.set('guestSessionId', `${body.guest_session_id}`);
         this.setState({
           // eslint-disable-next-line react/no-unused-state
           guestSessionId: body.guest_session_id,
@@ -277,8 +285,6 @@ export default class App extends Component {
   };
 
   createItem = (item) => {
-    const { guestSessionId } = this.state;
-    const callMovieDbService = new MovieDbService();
     const releaseDate = item.release_date ? format(parseISO(item.release_date), 'MMMM dd, yyyy') : 'no release date';
     const filmTitle = item.title || 'Movie title not specified';
     const overview = item.overview || 'Movie overview not specified';
@@ -290,7 +296,6 @@ export default class App extends Component {
       posterURL = `https://image.tmdb.org/t/p/w200${item.poster_path}`;
     }
     const genres = this.getGenresFilm(item.genre_ids);
-    if (store.get(`${item.id}`) > 0) callMovieDbService.setMovieRating(item.id, guestSessionId, rating);
 
     return {
       id: item.id,
@@ -327,7 +332,13 @@ export default class App extends Component {
 
     const pagination =
       tabPane === '1' && totalPages > 0 && !isLoading ? (
-        <Pagination defaultCurrent={1} current={numberPage} total={totalPages * 10} onChange={this.onPageChange} />
+        <Pagination
+          defaultCurrent={1}
+          current={numberPage}
+          total={totalPages * 10}
+          showSizeChanger={false}
+          onChange={this.onPageChange}
+        />
       ) : null;
     return (
       <div className="container">
