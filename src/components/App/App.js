@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import store from 'store';
 
 import { Alert, Empty, Layout, Pagination, Space, Spin } from 'antd';
 import { format, parseISO } from 'date-fns';
@@ -32,8 +33,16 @@ export default class App extends Component {
   };
 
   componentDidMount() {
-    this.createGuestSession();
+    if (!store.get('guestSessionId')) {
+      this.createGuestSession();
+    } else {
+      this.setState({
+        guestSessionId: store.get('guestSessionId'),
+      });
+    }
+
     this.getGenresList();
+    this.getPopularMovies();
   }
 
   static getDerivedStateFromError() {
@@ -41,6 +50,7 @@ export default class App extends Component {
   }
 
   componentDidCatch(error, info) {
+    // eslint-disable-next-line no-console
     console.error(info.componentStack);
   }
 
@@ -68,6 +78,7 @@ export default class App extends Component {
     callMovieDbService
       .guestSession()
       .then((body) => {
+        store.set('guestSessionId', `${body.guest_session_id}`);
         this.setState({
           // eslint-disable-next-line react/no-unused-state
           guestSessionId: body.guest_session_id,
@@ -84,7 +95,6 @@ export default class App extends Component {
   };
 
   searchMoviesData = () => {
-    // eslint-disable-next-line no-unused-vars
     const { searchQuery, numberPage } = this.state;
     const callMovieDbService = new MovieDbService();
     this.setState({
@@ -93,8 +103,49 @@ export default class App extends Component {
       notFound: false,
       isError: false,
     });
+
+    if (searchQuery === '') {
+      this.getPopularMovies();
+    } else {
+      callMovieDbService
+        .searchMovies(searchQuery, numberPage)
+        .then((item) => {
+          this.setState({
+            // eslint-disable-next-line react/no-unused-state
+            totalPages: item.total_pages,
+            numberPage,
+          });
+          if (item.results.length === 0) {
+            this.setState({
+              isLoading: false,
+              notFound: true,
+            });
+          }
+          item.results.forEach((elm) => {
+            this.addItemToList(elm);
+          });
+        })
+        .catch(() => {
+          this.setState({
+            isLoading: false,
+            notFound: false,
+            isError: true,
+          });
+        });
+    }
+  };
+
+  getPopularMovies = () => {
+    const { numberPage } = this.state;
+    const callMovieDbService = new MovieDbService();
+    this.setState({
+      movies: [],
+      isLoading: true,
+      notFound: false,
+      isError: false,
+    });
     callMovieDbService
-      .searchMovies(searchQuery, numberPage)
+      .getPopularMovies(numberPage)
       .then((item) => {
         this.setState({
           // eslint-disable-next-line react/no-unused-state
@@ -108,7 +159,7 @@ export default class App extends Component {
           });
         }
         item.results.forEach((elm) => {
-          this.addItem(elm);
+          this.addItemToList(elm);
         });
       })
       .catch(() => {
@@ -193,8 +244,8 @@ export default class App extends Component {
     );
   };
 
-  addItem = (item) => {
-    const newItem = this.createTodoItem(item);
+  addItemToList = (item) => {
+    const newItem = this.createItem(item);
 
     this.setState(({ movies }) => {
       const newDataStream = [...movies, newItem];
@@ -206,7 +257,7 @@ export default class App extends Component {
   };
 
   addRatedItem = (item) => {
-    const newItem = this.createTodoItem(item);
+    const newItem = this.createItem(item);
 
     this.setState(({ ratedFilm }) => {
       const newDataStream = [...ratedFilm, newItem];
@@ -233,17 +284,19 @@ export default class App extends Component {
     return filmGenres;
   };
 
-  createTodoItem = (item) => {
+  createItem = (item) => {
     const releaseDate = item.release_date ? format(parseISO(item.release_date), 'MMMM dd, yyyy') : 'no release date';
     const filmTitle = item.title || 'Movie title not specified';
     const overview = item.overview || 'Movie overview not specified';
-    const popularity = item.popularity || 0;
-    const rating = item.rating || 0;
+    const popularity = item.vote_average || 0;
+    const rating = store.get(`${item.id}`) || item.rating || 0;
+
     let posterURL = `${outOfPosterImg}`;
     if (item.poster_path) {
       posterURL = `https://image.tmdb.org/t/p/w200${item.poster_path}`;
     }
     const genres = this.getGenresFilm(item.genre_ids);
+
     return {
       id: item.id,
       filmTitle,
@@ -276,9 +329,16 @@ export default class App extends Component {
     const spin = isLoading && !isError ? <Spin tip="Loading..." size="large" /> : null;
 
     const search = tabPane === '1' ? <Search onInputChange={this.onInputChange} /> : null;
+
     const pagination =
       tabPane === '1' && totalPages > 0 && !isLoading ? (
-        <Pagination defaultCurrent={1} current={numberPage} total={totalPages * 10} onChange={this.onPageChange} />
+        <Pagination
+          defaultCurrent={1}
+          current={numberPage}
+          total={totalPages * 10}
+          showSizeChanger={false}
+          onChange={this.onPageChange}
+        />
       ) : null;
     return (
       <div className="container">

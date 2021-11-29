@@ -1,4 +1,3 @@
-/* eslint-disable object-shorthand */
 export default class MovieDbService {
   apiKey = '9420f971c77382011b10789475bfd7fa';
 
@@ -10,8 +9,7 @@ export default class MovieDbService {
       if (!res.ok) {
         throw new Error(`${res.status}`);
       }
-      const body = await res.json();
-      return body;
+      return await res.json();
     } catch (err) {
       // eslint-disable-next-line no-console
       console.error('Возникла проблема с fetch запросом: ', err.message);
@@ -27,9 +25,7 @@ export default class MovieDbService {
 
   getRatedMovies = async (guestSessionToken) => {
     const url = `${this.baseUrl}guest_session/${guestSessionToken}/rated/movies?api_key=${this.apiKey}`;
-
     const body = await this.getDataFromServer(url);
-
     return body;
   };
 
@@ -56,20 +52,24 @@ export default class MovieDbService {
 
   deleteRateMovie = async (id, guestSessionToken) => {
     const url = `${this.baseUrl}movie/${id}/rating?api_key=${this.apiKey}&guest_session_id=${guestSessionToken}`;
-
     const headers = {
       'Content-Type': 'application/json;charset=utf-8',
     };
     await fetch(url, {
       method: 'DELETE',
-      headers: headers,
+      headers,
     });
+  };
+
+  getPopularMovies = async (pageNumber = 1) => {
+    const url = `${this.baseUrl}movie/popular?api_key=${this.apiKey}&language=en-US&page=${pageNumber}`;
+    const body = await this.getDataFromServer(url);
+    return body;
   };
 
   getGenersList = async () => {
     const url = `${this.baseUrl}genre/movie/list?api_key=${this.apiKey}`;
     const body = await this.getDataFromServer(url);
-
     return body;
   };
 }
