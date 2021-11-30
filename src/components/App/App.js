@@ -302,7 +302,6 @@ export default class App extends Component {
     const overview = item.overview || 'Movie overview not specified';
     const popularity = item.vote_average || 0;
     const rating = store.get(`${item.id}`) || item.rating || 0;
-    console.log(rating);
     let posterURL = `${outOfPosterImg}`;
     if (item.poster_path) {
       posterURL = `https://image.tmdb.org/t/p/w200${item.poster_path}`;
