@@ -18,13 +18,13 @@ export default class MovieDbService {
   };
 
   searchMovies = async (searchQuery = 'return', pageNumber = 1) => {
-    const url = `${this.baseUrl}search/movie?api_key=${this.apiKey}&page=10&include_adult=false&query=${searchQuery}&page=${pageNumber}`;
+    const url = `${this.baseUrl}search/movie?api_key=${this.apiKey}&include_adult=false&query=${searchQuery}&page=${pageNumber}`;
     const body = await this.getDataFromServer(url);
     return body;
   };
 
-  getRatedMovies = async (guestSessionToken) => {
-    const url = `${this.baseUrl}guest_session/${guestSessionToken}/rated/movies?api_key=${this.apiKey}`;
+  getRatedMovies = async (guestSessionToken, pageNumber = 2) => {
+    const url = `${this.baseUrl}guest_session/${guestSessionToken}/rated/movies?api_key=${this.apiKey}&page=${pageNumber}`;
     const body = await this.getDataFromServer(url);
     return body;
   };
