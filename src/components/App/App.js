@@ -92,7 +92,7 @@ export default class App extends Component {
       });
   };
 
-  searchMoviesData = () => {
+  searchMovies = () => {
     const { searchQuery, numberPage } = this.state;
     const callMovieDbService = new MovieDbService();
     this.setState({
@@ -109,7 +109,6 @@ export default class App extends Component {
         .searchMovies(searchQuery, numberPage)
         .then((item) => {
           this.setState({
-            // eslint-disable-next-line react/no-unused-state
             totalPages: item.total_pages,
             numberPage,
           });
@@ -170,7 +169,7 @@ export default class App extends Component {
   };
 
   getRatedMovies = () => {
-    const { guestSessionId } = this.state;
+    const { guestSessionId, numberPage } = this.state;
     const callMovieDbService = new MovieDbService();
     this.setState({
       ratedFilm: [],
@@ -179,8 +178,12 @@ export default class App extends Component {
       isError: false,
     });
     callMovieDbService
-      .getRatedMovies(guestSessionId)
+      .getRatedMovies(guestSessionId, numberPage)
       .then((item) => {
+        this.setState({
+          totalPages: item.total_pages,
+          numberPage,
+        });
         if (item.results.length === 0) {
           this.setState({
             isLoading: false,
@@ -188,7 +191,7 @@ export default class App extends Component {
           });
         }
         item.results.forEach((elm) => {
-          this.addRatedItem(elm);
+          this.addRatedItemToList(elm);
         });
       })
       .catch(() => {
@@ -200,7 +203,7 @@ export default class App extends Component {
       });
   };
 
-  onInputChange = (searchQuery) => {
+  searchQueryChange = (searchQuery) => {
     this.setState(
       {
         searchQuery,
@@ -208,36 +211,48 @@ export default class App extends Component {
         numberPage: 1,
       },
       () => {
-        this.searchMoviesData();
+        this.searchMovies();
       }
     );
   };
 
-  onTabChange = (key) => {
+  changeTab = (key) => {
     if (key === '2') {
       this.setState(
         {
           tabPane: key,
+          numberPage: 1,
         },
         () => {
           this.getRatedMovies();
         }
       );
     } else {
-      this.setState({
-        notFound: false,
-        tabPane: key,
-      });
+      this.setState(
+        {
+          notFound: false,
+          tabPane: key,
+          numberPage: 1,
+        },
+        () => {
+          this.getPopularMovies();
+        }
+      );
     }
   };
 
-  onPageChange = (page) => {
+  changePage = (page) => {
+    const { tabPane } = this.state;
     this.setState(
       {
         numberPage: page,
       },
       () => {
-        this.searchMoviesData();
+        if (tabPane === '1') {
+          this.searchMovies();
+        } else {
+          this.getRatedMovies();
+        }
       }
     );
   };
@@ -254,7 +269,7 @@ export default class App extends Component {
     });
   };
 
-  addRatedItem = (item) => {
+  addRatedItemToList = (item) => {
     const newItem = this.createItem(item);
 
     this.setState(({ ratedFilm }) => {
@@ -286,7 +301,6 @@ export default class App extends Component {
     const filmTitle = item.title || 'Movie title not specified';
     const overview = item.overview || 'Movie overview not specified';
     const popularity = item.vote_average || 0;
-
     const rating = store.get(`${item.id}`) || item.rating || 0;
     console.log(rating);
     let posterURL = `${outOfPosterImg}`;
@@ -325,16 +339,16 @@ export default class App extends Component {
 
     const spin = isLoading && !isError ? <Spin tip="Loading..." size="large" /> : null;
 
-    const search = tabPane === '1' ? <Search onInputChange={this.onInputChange} /> : null;
+    const search = tabPane === '1' ? <Search searchQueryChange={this.searchQueryChange} /> : null;
 
     const pagination =
-      tabPane === '1' && totalPages > 0 && !isLoading ? (
+      totalPages > 0 && !isLoading ? (
         <Pagination
           defaultCurrent={1}
           current={numberPage}
           total={totalPages * 10}
           showSizeChanger={false}
-          onChange={this.onPageChange}
+          onChange={this.changePage}
         />
       ) : null;
     return (
@@ -342,7 +356,7 @@ export default class App extends Component {
         <Layout>
           <Context.Provider value={{ movies, ratedFilm, tabPane, guestSessionId }}>
             <Content>
-              <Header onTabChange={this.onTabChange} />
+              <Header changeTab={this.changeTab} />
               {search}
               <Space direction="vertical" align="center">
                 {spin}
