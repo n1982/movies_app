@@ -65,11 +65,11 @@ div .ant-card-body::after {
     grid-column: 3/4;
     grid-row: 1/2;
     display: flex;
-    border: 2px solid #E90000;
+    border: 3px solid #E90000;
     width: 35px;
     height: 35px;
     border-radius: 50%;
-    font-size: 10px;
+    font-size: 14px;
     font-weight: bold;
     justify-content: center;
     align-items: center;

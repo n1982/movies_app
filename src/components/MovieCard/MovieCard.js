@@ -54,7 +54,7 @@ const MovieCard = () => {
         <img className="card-img" alt={`poster ${filmTitle}`} src={posterURL} />
 
         <div className="card-movie-title">{filmTitle}</div>
-        <span className={inputClasses.join(' ')}>{popularity.toFixed(1)}</span>
+        <span className={inputClasses.join(' ')}>{popularity}</span>
 
         <Text type="secondary" className="card-release-date">
           {releaseDate}
