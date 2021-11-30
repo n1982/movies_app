@@ -331,6 +331,9 @@ export default class App extends Component {
     const { Content } = Layout;
     const { movies, isLoading, isError, notFound, totalPages, numberPage, guestSessionId, tabPane, ratedFilm } =
       this.state;
+
+    const contextValue = { movies, ratedFilm, tabPane, guestSessionId };
+
     const error = isError ? (
       <Alert message="Error" description="Что-то пошло не так. Но мы скоро все исправим :-)" type="error" showIcon />
     ) : null;
@@ -350,10 +353,11 @@ export default class App extends Component {
           onChange={this.changePage}
         />
       ) : null;
+
     return (
       <div className="container">
         <Layout>
-          <Context.Provider value={{ movies, ratedFilm, tabPane, guestSessionId }}>
+          <Context.Provider value={contextValue}>
             <Content>
               <Header changeTab={this.changeTab} />
               {search}
