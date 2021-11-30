@@ -28,8 +28,6 @@ export default class App extends Component {
     totalPages: 0,
     guestSessionId: '',
     tabPane: '1',
-    // eslint-disable-next-line react/no-unused-state
-    rating: 0,
   };
 
   componentDidMount() {
@@ -280,7 +278,6 @@ export default class App extends Component {
         }
       });
     }
-
     return filmGenres;
   };
 
@@ -289,8 +286,9 @@ export default class App extends Component {
     const filmTitle = item.title || 'Movie title not specified';
     const overview = item.overview || 'Movie overview not specified';
     const popularity = item.vote_average || 0;
-    const rating = store.get(`${item.id}`) || item.rating || 0;
 
+    const rating = store.get(`${item.id}`) || item.rating || 0;
+    console.log(rating);
     let posterURL = `${outOfPosterImg}`;
     if (item.poster_path) {
       posterURL = `https://image.tmdb.org/t/p/w200${item.poster_path}`;
@@ -317,7 +315,6 @@ export default class App extends Component {
   };
 
   render() {
-    // eslint-disable-next-line no-unused-vars
     const { Content } = Layout;
     const { movies, isLoading, isError, notFound, totalPages, numberPage, guestSessionId, tabPane, ratedFilm } =
       this.state;
