@@ -59,4 +59,4 @@
       От 5 до 7 - #E9D100<br/>
       Выше 7 - #66E900
 
-## Deploy - https://movies-app-n1982.vercel.app/
+## Deploy - https://movies-app-navy-iota.vercel.app/
